@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Tiket extends Model
 {
-   protected $table = 'tiket';
+    use HasFactory;
 
-protected $fillable = [
-    'tanggal',
-    'harga',
-    'kuota',
-    'kuota_tersedia'
-];
+    protected $table = 'tiket';
+    protected $fillable = ['pengguna_id', 'kodeTiket', 'tanggalKunjungan', 'jumlah', 'totalHarga', 'status'];
+
+    // Relasi balik ke Pengguna
+    public function pengguna() {
+        return $this->belongsTo(Pengguna::class);
+    }
+
+    protected static function newFactory() { return \Database\Factories\TiketFactory::new(); }
 }

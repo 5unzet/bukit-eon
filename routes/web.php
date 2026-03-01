@@ -8,8 +8,8 @@ use App\Http\Controllers\AdminController;
 
 
 Route::get('/', function () {
-    return view('blades.home'); 
-});
+    return view('dashboard'); 
+})->middleware(['auth']); // Tambahkan ini agar aman
 
 Route::get('/dashboard', function () {
     return view('dashboard');

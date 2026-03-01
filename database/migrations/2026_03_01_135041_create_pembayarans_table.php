@@ -11,19 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-                Schema::create('pembayaran', function (Blueprint $table) {
+        Schema::create('pembayaran', function (Blueprint $table) {
     $table->id();
-
-    $table->unsignedBigInteger('reservasi_id');
-    $table->string('bukti_transfer')->nullable();
-    $table->enum('status',['pending','valid','invalid'])->default('pending');
-
+    $table->foreignId('tiket_id')->constrained('tiket')->onDelete('cascade');
+    $table->string('metode');
+    $table->enum('status', ['sukses', 'gagal']);
+    $table->dateTime('tanggalBayar');
     $table->timestamps();
-
-    $table->foreign('reservasi_id')
-          ->references('id')
-          ->on('reservasi')
-          ->onDelete('cascade');
 });
     }
 
