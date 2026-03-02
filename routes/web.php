@@ -1,38 +1,47 @@
-
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Reservasi;
+use App\Http\Controllers\AdminController;
 
-
-use Illuminate\Http\Request;
 
 Route::get('/', function () {
-    return view('home');
+    return view('dashboard'); 
+})->middleware(['auth']); // Tambahkan ini agar aman
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+use App\Http\Controllers\ReservasiController;
 
-Route::post('/login', function (Request $request) {
-    $username = $request->input('username');
-    $password = $request->input('password');
-    // Contoh login sederhana (username: admin, password: admin123)
-    if ($username === 'admin' && $password === 'admin123') {
-        $request->session()->put('is_logged_in', true);
-        return redirect('/booking');
-    }
-    return back()->withErrors(['login' => 'Username atau password salah!']);
+Route::middleware('auth')->group(function(){
+    Route::get('/reservasi',[ReservasiController::class,'index'])->name('reservasi.index');
+    Route::post('/reservasi',[ReservasiController::class,'store'])->name('reservasi.store');
 });
 
-Route::get('/logout', function (Request $request) {
-    $request->session()->forget('is_logged_in');
-    return redirect('/login');
-})->name('logout');
+Route::middleware('auth')->get('/dashboard-user', function () {
+    $reservasi = Reservasi::where('user_id', Auth::id())->get();
+    return view('dashboard-user', compact('reservasi'));
+})->name('dashboard.user');
 
-Route::get('/booking', function (Request $request) {
-    if (!$request->session()->get('is_logged_in')) {
-        return redirect('/login');
-    }
-    return view('booking');
-});
+Route::middleware(['auth','admin'])->get('/dashboard-admin', [AdminController::class,'index'])->name('dashboard.admin');
+
+Route::middleware(['auth','admin'])->get('/konfirmasi/{id}', function($id){
+    $r = \App\Models\Reservasi::findOrFail($id);
+    $r->status = 'dikonfirmasi';
+    $r->save();
+    return back();
+})->name('admin.konfirmasi');
+
+Route::middleware(['auth','admin'])->get('/statistik', [AdminController::class,'statistik'])->name('statistik');
+
+require __DIR__.'/auth.php';
