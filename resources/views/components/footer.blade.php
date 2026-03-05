@@ -1,3 +1,3 @@
-<footer class="bg-white shadow py-4 text-center text-gray-500 text-sm">
+<footer class="bg-light py-3 text-center text-muted small border-top mt-auto">
     &copy; 2026 Bukit Eon. All rights reserved.
 </footer>

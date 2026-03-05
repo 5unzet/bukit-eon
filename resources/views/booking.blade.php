@@ -1,53 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 flex flex-col">
+<div class="d-flex flex-column min-vh-100 bg-light">
     @include('components.navbar')
-    <main class="flex-grow container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6 text-center">Pemesanan Makanan</h1>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <main class="flex-grow-1 container py-5">
+        <h1 class="text-center fw-bold mb-5">Pemesanan Makanan</h1>
+        <div class="row g-4">
             <!-- Menu 1 -->
-            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Nasi Goreng" class="h-28 w-28 object-cover rounded mb-4">
-                <h2 class="text-lg font-semibold mb-2">Nasi Goreng</h2>
-                <p class="text-gray-600 mb-2">Nasi goreng spesial dengan telur dan ayam.</p>
-                <span class="font-bold text-blue-600 mb-4">Rp 20.000</span>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Pesan</button>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 text-center">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Nasi Goreng">
+                    <div class="card-body">
+                        <h5 class="card-title">Nasi Goreng</h5>
+                        <p class="card-text">Nasi goreng spesial dengan telur dan ayam.</p>
+                        <span class="fw-bold text-primary d-block mb-3">Rp 20.000</span>
+                        <button class="btn btn-primary">Pesan</button>
+                    </div>
+                </div>
             </div>
             <!-- Menu 2 -->
-            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80" alt="Mie Goreng" class="h-28 w-28 object-cover rounded mb-4">
-                <h2 class="text-lg font-semibold mb-2">Mie Goreng</h2>
-                <p class="text-gray-600 mb-2">Mie goreng lezat dengan sayuran dan bakso.</p>
-                <span class="font-bold text-blue-600 mb-4">Rp 18.000</span>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Pesan</button>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 text-center">
+                    <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Mie Goreng">
+                    <div class="card-body">
+                        <h5 class="card-title">Mie Goreng</h5>
+                        <p class="card-text">Mie goreng lezat dengan sayuran dan bakso.</p>
+                        <span class="fw-bold text-primary d-block mb-3">Rp 18.000</span>
+                        <button class="btn btn-primary">Pesan</button>
+                    </div>
+                </div>
             </div>
             <!-- Menu 3 -->
-            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                <img src="https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80" alt="Ayam Bakar" class="h-28 w-28 object-cover rounded mb-4">
-                <h2 class="text-lg font-semibold mb-2">Ayam Bakar</h2>
-                <p class="text-gray-600 mb-2">Ayam bakar bumbu khas Bukit Eon.</p>
-                <span class="font-bold text-blue-600 mb-4">Rp 25.000</span>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Pesan</button>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 text-center">
+                    <img src="https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Ayam Bakar">
+                    <div class="card-body">
+                        <h5 class="card-title">Ayam Bakar</h5>
+                        <p class="card-text">Ayam bakar bumbu khas Bukit Eon.</p>
+                        <span class="fw-bold text-primary d-block mb-3">Rp 25.000</span>
+                        <button class="btn btn-primary">Pesan</button>
+                    </div>
+                </div>
             </div>
             <!-- Menu 4 -->
-            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                <img src="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80" alt="Sate Ayam" class="h-28 w-28 object-cover rounded mb-4">
-                <h2 class="text-lg font-semibold mb-2">Sate Ayam</h2>
-                <p class="text-gray-600 mb-2">Sate ayam dengan bumbu kacang khas.</p>
-                <span class="font-bold text-blue-600 mb-4">Rp 22.000</span>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Pesan</button>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 text-center">
+                    <img src="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Sate Ayam">
+                    <div class="card-body">
+                        <h5 class="card-title">Sate Ayam</h5>
+                        <p class="card-text">Sate ayam dengan bumbu kacang khas.</p>
+                        <span class="fw-bold text-primary d-block mb-3">Rp 22.000</span>
+                        <button class="btn btn-primary">Pesan</button>
+                    </div>
+                </div>
             </div>
             <!-- Menu 5 -->
-            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80" alt="Bakso" class="h-28 w-28 object-cover rounded mb-4">
-                <h2 class="text-lg font-semibold mb-2">Bakso</h2>
-                <p class="text-gray-600 mb-2">Bakso daging sapi dengan kuah gurih.</p>
-                <span class="font-bold text-blue-600 mb-4">Rp 15.000</span>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Pesan</button>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 text-center">
+                    <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Bakso">
+                    <div class="card-body">
+                        <h5 class="card-title">Bakso</h5>
+                        <p class="card-text">Bakso daging sapi dengan kuah gurih.</p>
+                        <span class="fw-bold text-primary d-block mb-3">Rp 15.000</span>
+                        <button class="btn btn-primary">Pesan</button>
+                    </div>
+                </div>
             </div>
             <!-- Menu 6 -->
-            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 text-center">
                 <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Soto Ayam" class="h-28 w-28 object-cover rounded mb-4">
                 <h2 class="text-lg font-semibold mb-2">Soto Ayam</h2>
                 <p class="text-gray-600 mb-2">Soto ayam segar dengan koya dan telur.</p>
