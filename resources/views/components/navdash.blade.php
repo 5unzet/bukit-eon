@@ -12,8 +12,14 @@
                 <li class="nav-item">
                     <a class="nav-link @if(Request::is('dashboard')) active bg-body-tertiary text-dark @endif" href="/dashboard">Dashboard</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link @if(Request::is('dashboard/orders')) active bg-body-tertiary text-dark @endif" href="/dashboard/orders">Pesanan</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle @if(Request::is('dashboard/tiket*') || Request::is('dashboard/order-makanan*')) active bg-body-tertiary text-dark @endif" href="#" id="orderDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Order
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                        <li><a class="dropdown-item" href="/dashboard/tiket">Tiket Wisata</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/order-makanan">Order Makanan</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @if(Request::is('dashboard/wisata')) active bg-body-tertiary text-dark @endif" href="/dashboard/wisata">Wisata</a>

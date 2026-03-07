@@ -114,5 +114,57 @@ class DatabaseSeeder extends Seeder
                 'updated_at_makan' => '2026-03-07 08:54:07',
             ],
         ]);
+
+        // Seeder untuk tbl_iw (wisata)
+        \DB::table('tbl_iw')->insert([
+            [
+                'judul_iw' => 'Camp',
+                'deskripsi_iw' => 'Nikmati sensasi berkemah di atas awan dengan pemandangan city light yang memukau. Area camp luas dan aman.',
+                'buka_iw' => '09:00:00',
+                'tutup_iw' => '24:00:00',
+                'tiket_iw' => 20000,
+                'foto_iw' => 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+                'status_iw' => 'VALID',
+                'picu_iw' => 1,
+                'created_at_iw' => '2026-03-01 14:31:48',
+                'updated_at_iw' => '2026-03-01 14:31:48',
+            ],
+            [
+                'judul_iw' => 'Café',
+                'deskripsi_iw' => 'Tempat nongkrong asik dengan pilihan kopi lokal dan camilan hangat sambil menikmati udara sejuk perbukitan.',
+                'buka_iw' => '09:00:00',
+                'tutup_iw' => '21:00:00',
+                'tiket_iw' => 0,
+                'foto_iw' => 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=600&q=80',
+                'status_iw' => 'VALID',
+                'picu_iw' => 1,
+                'created_at_iw' => '2026-03-01 14:31:48',
+                'updated_at_iw' => '2026-03-01 14:31:48',
+            ],
+            [
+                'judul_iw' => 'Resto',
+                'deskripsi_iw' => 'Menyajikan hidangan khas pedesaan dan menu nusantara yang cocok untuk makan bersama keluarga besar.',
+                'buka_iw' => '10:00:00',
+                'tutup_iw' => '20:00:00',
+                'tiket_iw' => 0,
+                'foto_iw' => 'https://images.unsplash.com/photo-1504674900247-ec6b0b1b6e6b?auto=format&fit=crop&w=600&q=80',
+                'status_iw' => 'VALID',
+                'picu_iw' => 2,
+                'created_at_iw' => '2026-03-01 14:31:48',
+                'updated_at_iw' => '2026-03-01 14:31:48',
+            ],
+            [
+                'judul_iw' => 'Hunting',
+                'deskripsi_iw' => 'Spot foto Instagramable mulai dari dek observasi, ayunan langit, hingga jalur trekking yang estetik.',
+                'buka_iw' => '07:00:00',
+                'tutup_iw' => '19:00:00',
+                'tiket_iw' => 10000,
+                'foto_iw' => 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
+                'status_iw' => 'VALID',
+                'picu_iw' => 1,
+                'created_at_iw' => '2026-03-01 14:31:48',
+                'updated_at_iw' => '2026-03-01 14:31:48',
+            ],
+        ]);
     }
 }

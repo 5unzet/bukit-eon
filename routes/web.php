@@ -70,7 +70,6 @@ Route::get('/ticketing', function (Request $request) {
     return view('ticketing');
 });
 
-
 Route::get('/dashboard', function (Request $request) {
     if (!$request->session()->get('is_logged_in')) {
         return redirect('/login');
@@ -87,6 +86,15 @@ Route::get('/dashboard/makanan', function (Request $request) {
     return view('makanan', compact('makanans'));
 });
 
+use App\Models\Iw;
+// List wisata
+Route::get('/dashboard/wisata', function (Request $request) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+    $wisatas = Iw::where('status_iw', '<>', 'VOID')->with('user')->orderByDesc('updated_at_iw')->get();
+    return view('wisata', compact('wisatas'));
+});
 
 Route::get('/dashboard/laporan/wisata', function (Request $request) {
     if (!$request->session()->get('is_logged_in')) {
@@ -101,6 +109,14 @@ Route::get('/dashboard/laporan/makanan', function (Request $request) {
     }
     return view('laporan-makanan');
 });
+
+Route::get('/dashboard/tiket', function (Request $request) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+    return view('tiket');
+});
+
 Route::get('/dashboard/orders', function (Request $request) {
     if (!$request->session()->get('is_logged_in')) {
         return redirect('/login');
@@ -108,12 +124,13 @@ Route::get('/dashboard/orders', function (Request $request) {
     return view('orders');
 });
 
-Route::get('/dashboard/wisata', function (Request $request) {
-    if (!$request->session()->get('is_logged_in')) {
-        return redirect('/login');
-    }
-    return view('wisata');
-});
+
+use App\Http\Controllers\OrderMakananController;
+Route::get('/dashboard/order-makanan', [OrderMakananController::class, 'index'])->name('dashboard.order-makanan');
+Route::post('/dashboard/order-makanan/validasi', [OrderMakananController::class, 'validasi'])->name('dashboard.order-makanan.validasi');
+Route::post('/dashboard/order-makanan/finish-item', [OrderMakananController::class, 'finishItem'])->name('dashboard.order-makanan.finish-item');
+Route::post('/dashboard/order-makanan/bayar', [OrderMakananController::class, 'bayar'])->name('dashboard.order-makanan.bayar');
+Route::post('/dashboard/order-makanan/void', [OrderMakananController::class, 'void'])->name('dashboard.order-makanan.void');
 
 //script crud mulai dari sini:
 use Illuminate\Support\Str;
@@ -207,4 +224,91 @@ Route::post('/dashboard/makanan/toggle-ready/{id}', function ($id) {
     $new = strtoupper($makan->ketersediaan_makan) === 'OPEN' ? 'CLOSE' : 'OPEN';
     $makan->update(['ketersediaan_makan' => $new, 'updated_at_makan' => now('Asia/Jakarta')]);
     return response()->json(['success' => true, 'ketersediaan_makan' => $new]);
+});
+
+// Tambah wisata
+Route::post('/dashboard/wisata/tambah', function (Request $request) {
+    try {
+        $data = $request->validate([
+            'judul_iw' => 'required',
+            'deskripsi_iw' => 'nullable',
+            'buka_iw' => 'nullable',
+            'tutup_iw' => 'nullable',
+            'tiket_iw' => 'nullable|numeric',
+            'foto_iw' => 'nullable',
+        ]);
+        $data['status_iw'] = 'VALID';
+        $data['picu_iw'] = session('user.id_user') ?? 1;
+        $data['created_at_iw'] = now('Asia/Jakarta');
+        $data['updated_at_iw'] = now('Asia/Jakarta');
+        if ($request->hasFile('foto_iw')) {
+            $dir = public_path('assets/wisata');
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+                    throw new \Exception('Gagal membuat folder assets/wisata');
+                }
+            }
+            $file = $request->file('foto_iw');
+            $filename = uniqid('iw_') . '.' . $file->getClientOriginalExtension();
+            $file->move($dir, $filename);
+            $data['foto_iw'] = 'assets/wisata/' . $filename;
+        } else {
+            $data['foto_iw'] = null;
+        }
+        Iw::create($data);
+        return response()->json(['success' => true]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
+});
+
+// Edit wisata
+Route::post('/dashboard/wisata/edit/{id}', function (Request $request, $id) {
+    $iw = Iw::findOrFail($id);
+    $data = $request->validate([
+        'judul_iw' => 'required',
+        'deskripsi_iw' => 'nullable',
+        'buka_iw' => 'nullable',
+        'tutup_iw' => 'nullable',
+        'tiket_iw' => 'nullable|numeric',
+        'foto_iw' => 'nullable',
+    ]);
+    $data['picu_iw'] = session('user.id_user') ?? 1;
+    $data['updated_at_iw'] = now('Asia/Jakarta');
+    try {
+        if ($request->hasFile('foto_iw')) {
+            $dir = public_path('assets/wisata');
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+                    throw new \Exception('Gagal membuat folder assets/wisata');
+                }
+            }
+            // Hapus file lama jika ada dan bukan url eksternal
+            if ($iw->foto_iw && !Str::startsWith($iw->foto_iw, ['http://', 'https://'])) {
+                $oldPath = public_path($iw->foto_iw);
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+            $file = $request->file('foto_iw');
+            $filename = uniqid('iw_') . '.' . $file->getClientOriginalExtension();
+            $file->move($dir, $filename);
+            $data['foto_iw'] = 'assets/wisata/' . $filename;
+        } else {
+            unset($data['foto_iw']);
+        }
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
+    $iw->update($data);
+    return response()->json(['success' => true]);
+});
+
+// Hapus wisata (set status VOID)
+Route::post('/dashboard/wisata/hapus/{id}', function ($id) {
+    $iw = Iw::findOrFail($id);
+    $iw->update(['status_iw' => 'VOID', 'updated_at_iw' => now('Asia/Jakarta')]);
+    return response()->json(['success' => true]);
 });
