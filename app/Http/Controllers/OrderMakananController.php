@@ -10,7 +10,7 @@ class OrderMakananController extends Controller
 {
     public function index(Request $request)
     {
-        $tanggal = $request->get('tanggal', date('Y-m-d'));
+        $tanggal = $request->get('tanggal', now('Asia/Jakarta')->format('Y-m-d'));
         $orders = OrderHeader::with('details')
             ->where('tanggal_order_header', $tanggal)
             ->orderByRaw("FIELD(status_order_header, 'INPUT', 'VALID', 'FINISH', 'PAID', 'VOID')")

@@ -17,4 +17,9 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(OrderHeader::class, 'id_resi_order_detail', 'id_order_header');
     }
+
+    public function makanan()
+    {
+        return $this->belongsTo(Makan::class, 'id_makan_order_detail', 'id_makan');
+    }
 }

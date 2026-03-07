@@ -5,7 +5,7 @@
     <h2 class="fw-bold mb-3">Order Makanan</h2>
     <form method="get" class="mb-3 d-flex align-items-center gap-2" id="filterTanggalForm">
         <label class="form-label mb-0">Tanggal:</label>
-        <input type="date" name="tanggal" class="form-control" id="filterTanggal" style="width:200px" value="{{ $tanggal }}" onchange="this.form.submit()">
+        <input type="date" name="tanggal" class="form-control" id="filterTanggal" style="width:200px" value="{{ $tanggal ?? (now()->setTimezone('Asia/Jakarta')->format('Y-m-d')) }}" onchange="this.form.submit()">
     </form>
     <div class="table-responsive">
         <table class="table table-bordered align-middle" id="orderTable">

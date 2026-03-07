@@ -166,5 +166,41 @@ class DatabaseSeeder extends Seeder
                 'updated_at_iw' => '2026-03-01 14:31:48',
             ],
         ]);
+
+        // Seeder untuk tbl_cust
+        \DB::table('tbl_cust')->insert([
+            [
+                'email_cust' => 'andi@mail.com', 'pass_cust' => 'pass123', 'nama_cust' => 'Andi Wijaya', 'no_hp_cust' => '081234567890', 'status_cust' => 'VALID', 'created_cust' => '2026-03-08 08:00:00', 'picc_cust' => 1, 'updated_cust' => '2026-03-08 08:00:00', 'picu_cust' => 1
+            ],
+            [
+                'email_cust' => 'budi@mail.com', 'pass_cust' => 'pass234', 'nama_cust' => 'Budi Santoso', 'no_hp_cust' => '081234567891', 'status_cust' => 'VOID', 'created_cust' => '2026-03-08 08:10:00', 'picc_cust' => 2, 'updated_cust' => '2026-03-08 08:10:00', 'picu_cust' => 2
+            ],
+            [
+                'email_cust' => 'citra@mail.com', 'pass_cust' => 'pass345', 'nama_cust' => 'Citra Dewi', 'no_hp_cust' => '081234567892', 'status_cust' => 'VALID', 'created_cust' => '2026-03-08 08:20:00', 'picc_cust' => 2, 'updated_cust' => '2026-03-08 08:20:00', 'picu_cust' => 1
+            ],
+            [
+                'email_cust' => 'dina@mail.com', 'pass_cust' => 'pass456', 'nama_cust' => 'Dina Lestari', 'no_hp_cust' => '081234567893', 'status_cust' => 'VALID', 'created_cust' => '2026-03-08 08:30:00', 'picc_cust' => 2, 'updated_cust' => '2026-03-08 08:30:00', 'picu_cust' => 2
+            ],
+            [
+                'email_cust' => 'eko@mail.com', 'pass_cust' => 'pass567', 'nama_cust' => 'Eko Prasetyo', 'no_hp_cust' => '081234567894', 'status_cust' => 'VOID', 'created_cust' => '2026-03-08 08:40:00', 'picc_cust' => 1, 'updated_cust' => '2026-03-08 08:40:00', 'picu_cust' => 2
+            ],
+            [
+                'email_cust' => 'fajar@mail.com', 'pass_cust' => 'pass678', 'nama_cust' => 'Fajar Nugroho', 'no_hp_cust' => '081234567895', 'status_cust' => 'VALID', 'created_cust' => '2026-03-08 08:50:00', 'picc_cust' => 1, 'updated_cust' => '2026-03-08 08:50:00', 'picu_cust' => 1
+            ],
+            [
+                'email_cust' => 'gina@mail.com', 'pass_cust' => 'pass789', 'nama_cust' => 'Gina Putri', 'no_hp_cust' => '081234567896', 'status_cust' => 'VOID', 'created_cust' => '2026-03-08 09:00:00', 'picc_cust' => 1, 'updated_cust' => '2026-03-08 09:00:00', 'picu_cust' => 1
+            ],
+        ]);
+
+        // Seeder untuk tbl_tiket
+        \DB::table('tbl_tiket')->insert([
+            [ 'id_user_tiket'=>1, 'id_iw_tiket'=>1, 'resi_tiket'=>'RESI001', 'harga_tiket'=>25000, 'qty_tiket'=>2, 'total_tiket'=>50000, 'status_tiket'=>'VALID', 'created_tiket'=>'2026-03-08 09:00:00', 'picc_tiket'=>1, 'updated_tiket'=>'2026-03-08 09:00:00', 'picu_tiket'=>2, 'tanggal_tiket'=>'2026-03-08' ],
+            [ 'id_user_tiket'=>2, 'id_iw_tiket'=>2, 'resi_tiket'=>'RESI002', 'harga_tiket'=>30000, 'qty_tiket'=>1, 'total_tiket'=>30000, 'status_tiket'=>'VOID',  'created_tiket'=>'2026-03-08 09:10:00', 'picc_tiket'=>2, 'updated_tiket'=>'2026-03-08 09:10:00', 'picu_tiket'=>1, 'tanggal_tiket'=>'2026-03-08' ],
+            [ 'id_user_tiket'=>3, 'id_iw_tiket'=>1, 'resi_tiket'=>'RESI003', 'harga_tiket'=>25000, 'qty_tiket'=>4, 'total_tiket'=>100000, 'status_tiket'=>'PAID', 'created_tiket'=>'2026-03-08 09:20:00', 'picc_tiket'=>1, 'updated_tiket'=>'2026-03-08 09:20:00', 'picu_tiket'=>1, 'tanggal_tiket'=>'2026-03-08' ],
+            [ 'id_user_tiket'=>4, 'id_iw_tiket'=>3, 'resi_tiket'=>'RESI004', 'harga_tiket'=>40000, 'qty_tiket'=>1, 'total_tiket'=>40000, 'status_tiket'=>'VALID', 'created_tiket'=>'2026-03-08 09:30:00', 'picc_tiket'=>1, 'updated_tiket'=>'2026-03-08 09:30:00', 'picu_tiket'=>2, 'tanggal_tiket'=>'2026-03-08' ],
+            [ 'id_user_tiket'=>5, 'id_iw_tiket'=>2, 'resi_tiket'=>'RESI005', 'harga_tiket'=>30000, 'qty_tiket'=>3, 'total_tiket'=>90000, 'status_tiket'=>'PAID',  'created_tiket'=>'2026-03-08 09:40:00', 'picc_tiket'=>2, 'updated_tiket'=>'2026-03-08 09:40:00', 'picu_tiket'=>2, 'tanggal_tiket'=>'2026-03-08' ],
+            [ 'id_user_tiket'=>6, 'id_iw_tiket'=>1, 'resi_tiket'=>'RESI006', 'harga_tiket'=>25000, 'qty_tiket'=>2, 'total_tiket'=>50000, 'status_tiket'=>'VOID',  'created_tiket'=>'2026-03-08 09:50:00', 'picc_tiket'=>1, 'updated_tiket'=>'2026-03-08 09:50:00', 'picu_tiket'=>1, 'tanggal_tiket'=>'2026-03-08' ],
+            [ 'id_user_tiket'=>7, 'id_iw_tiket'=>3, 'resi_tiket'=>'RESI007', 'harga_tiket'=>40000, 'qty_tiket'=>1, 'total_tiket'=>40000, 'status_tiket'=>'VALID', 'created_tiket'=>'2026-03-08 10:00:00', 'picc_tiket'=>1, 'updated_tiket'=>'2026-03-08 10:00:00', 'picu_tiket'=>2, 'tanggal_tiket'=>'2026-03-08' ],
+        ]);
     }
 }

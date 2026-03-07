@@ -70,12 +70,9 @@ Route::get('/ticketing', function (Request $request) {
     return view('ticketing');
 });
 
-Route::get('/dashboard', function (Request $request) {
-    if (!$request->session()->get('is_logged_in')) {
-        return redirect('/login');
-    }
-    return view('dashboard');
-});
+
+use App\Http\Controllers\DashboardController;
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 use App\Models\Makan;
 Route::get('/dashboard/makanan', function (Request $request) {
@@ -110,20 +107,20 @@ Route::get('/dashboard/laporan/makanan', function (Request $request) {
     return view('laporan-makanan');
 });
 
+use App\Models\TblTiket;
+use App\Models\TblCust;
 Route::get('/dashboard/tiket', function (Request $request) {
     if (!$request->session()->get('is_logged_in')) {
         return redirect('/login');
     }
-    return view('tiket');
+    $tanggal = $request->input('tanggal', now('Asia/Jakarta')->format('Y-m-d'));
+    $tikets = TblTiket::with(['iw', 'cust'])
+        ->whereDate('tanggal_tiket', $tanggal)
+        ->orderByRaw("FIELD(status_tiket, 'VALID', 'PAID', 'VOID')")
+        ->orderByDesc('tanggal_tiket')
+        ->get();
+    return view('tiket', compact('tanggal', 'tikets'));
 });
-
-Route::get('/dashboard/orders', function (Request $request) {
-    if (!$request->session()->get('is_logged_in')) {
-        return redirect('/login');
-    }
-    return view('orders');
-});
-
 
 use App\Http\Controllers\OrderMakananController;
 Route::get('/dashboard/order-makanan', [OrderMakananController::class, 'index'])->name('dashboard.order-makanan');
@@ -312,3 +309,47 @@ Route::post('/dashboard/wisata/hapus/{id}', function ($id) {
     $iw->update(['status_iw' => 'VOID', 'updated_at_iw' => now('Asia/Jakarta')]);
     return response()->json(['success' => true]);
 });
+
+use Illuminate\Http\Response;
+Route::post('/dashboard/tiket/validasi', function(Request $request) {
+    $id = $request->input('id');
+    $userId = session('user.id_user') ?? 1;
+    $tiket = TblTiket::find($id);
+    if (!$tiket || $tiket->status_tiket !== 'VALID') {
+        return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan atau status tidak valid!']);
+    }
+    $tiket->status_tiket = 'VALID'; // tetap VALID, jika ingin status lain bisa diubah
+    $tiket->updated_tiket = now('Asia/Jakarta');
+    $tiket->picu_tiket = $userId;
+    $tiket->save();
+    return response()->json(['success' => true]);
+})->name('dashboard.tiket.validasi');
+Route::post('/dashboard/tiket/bayar', function(Request $request) {
+    $id = $request->input('id');
+    $userId = session('user.id_user') ?? 1;
+    $tiket = TblTiket::find($id);
+    if (!$tiket || $tiket->status_tiket !== 'VALID') {
+        return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan atau status tidak valid!']);
+    }
+    $tiket->status_tiket = 'PAID';
+    $tiket->updated_tiket = now('Asia/Jakarta');
+    $tiket->picu_tiket = $userId;
+    $tiket->save();
+    return response()->json(['success' => true]);
+})->name('dashboard.tiket.bayar');
+Route::post('/dashboard/tiket/void', function(Request $request) {
+    $id = $request->input('id');
+    $userId = session('user.id_user') ?? 1;
+    $tiket = TblTiket::find($id);
+    if (!$tiket || $tiket->status_tiket === 'PAID') {
+        return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan atau sudah paid!']);
+    }
+    $tiket->status_tiket = 'VOID';
+    $tiket->updated_tiket = now('Asia/Jakarta');
+    $tiket->picu_tiket = $userId;
+    $tiket->save();
+    return response()->json(['success' => true]);
+})->name('dashboard.tiket.void');
+Route::get('/dashboard/tiket/cetak/{id}', function($id) {
+    return new Response('Cetak tiket #'.$id, 200);
+})->name('dashboard.tiket.cetak');
