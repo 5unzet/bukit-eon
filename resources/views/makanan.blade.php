@@ -18,7 +18,7 @@
                     <th>Deskripsi</th>
                     <th>Harga</th>
                     
-                    <th>Picu</th>
+                    <th>PIC</th>
                     <th>Updated</th>
                     <th>Aksi</th>
                 </tr>

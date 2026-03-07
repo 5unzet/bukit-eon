@@ -149,13 +149,13 @@ Route::post('/dashboard/makanan/tambah', function (Request $request) {
     } catch (\Exception $e) {
         return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
     }
-    \App\Models\Makan::create($data);
+    Makan::create($data);
     return response()->json(['success' => true]);
 });
 
 // Edit makanan
 Route::post('/dashboard/makanan/edit/{id}', function (Request $request, $id) {
-    $makan = \App\Models\Makan::findOrFail($id);
+    $makan = Makan::findOrFail($id);
     $data = $request->validate([
         'nama_makan' => 'required',
         'harga_makan' => 'required|numeric',
@@ -196,14 +196,14 @@ Route::post('/dashboard/makanan/edit/{id}', function (Request $request, $id) {
 
 // Hapus makanan (set status VOID)
 Route::post('/dashboard/makanan/hapus/{id}', function ($id) {
-    $makan = \App\Models\Makan::findOrFail($id);
+    $makan = Makan::findOrFail($id);
     $makan->update(['status_makan' => 'VOID', 'updated_at_makan' => now('Asia/Jakarta')]);
     return response()->json(['success' => true]);
 });
 
 // Toggle ketersediaan
 Route::post('/dashboard/makanan/toggle-ready/{id}', function ($id) {
-    $makan = \App\Models\Makan::findOrFail($id);
+    $makan = Makan::findOrFail($id);
     $new = strtoupper($makan->ketersediaan_makan) === 'OPEN' ? 'CLOSE' : 'OPEN';
     $makan->update(['ketersediaan_makan' => $new, 'updated_at_makan' => now('Asia/Jakarta')]);
     return response()->json(['success' => true, 'ketersediaan_makan' => $new]);
