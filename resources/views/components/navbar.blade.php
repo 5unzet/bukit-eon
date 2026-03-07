@@ -18,6 +18,8 @@
                             {{ $user['nama_user'] ?? 'User' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/dashboard">Dashboard Internal</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/profil">Profil</a></li>
                             <li><a class="dropdown-item" href="/password">Password</a></li>
                             <li><hr class="dropdown-divider"></li>
