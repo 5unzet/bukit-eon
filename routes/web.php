@@ -14,15 +14,42 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
+use App\Models\TblUser;
 Route::post('/login', function (Request $request) {
-    $username = $request->input('username');
+    $email = $request->input('username');
     $password = $request->input('password');
-    // Contoh login sederhana (username: admin, password: admin123)
-    if ($username === 'admin' && $password === 'admin123') {
+    // Login berdasarkan email_user dan pass_user
+    $user = TblUser::where('email_user', $email)
+        ->where('pass_user', $password)
+        ->first();
+    if ($user) {
+        if ($user->status_user !== 'VALID') {
+            return back()->with('swal', [
+                'icon' => 'error',
+                'title' => 'Akun Ditangguhkan',
+                'text' => 'Akun anda ditangguhkan, silahkan hubungi admin.',
+            ]);
+        }
         $request->session()->put('is_logged_in', true);
-        return redirect('/booking');
+        $request->session()->put('user', [
+            'id_user' => $user->id_user,
+            'nama_user' => $user->nama_user,
+            'email_user' => $user->email_user,
+            'role_user' => $user->role_user,
+            'status_user' => $user->status_user,
+            'created_user' => $user->created_user,
+        ]);
+        return redirect('/booking')->with('swal', [
+            'icon' => 'success',
+            'title' => 'Login Berhasil',
+            'text' => 'Selamat datang, ' . $user->nama_user . '!',
+        ]);
     }
-    return back()->withErrors(['login' => 'Username atau password salah!']);
+    return back()->with('swal', [
+        'icon' => 'error',
+        'title' => 'Login Gagal',
+        'text' => 'Email atau password salah!',
+    ]);
 });
 
 Route::get('/logout', function (Request $request) {
