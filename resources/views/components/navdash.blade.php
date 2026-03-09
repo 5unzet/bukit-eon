@@ -56,6 +56,7 @@
                         <li><span class="dropdown-item-text">{{ session('user.role_user') }}</span></li>
                         <li><a class="dropdown-item text-primary" href="/">Kembali ke Website</a></li>
                         <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-primary" href="/dashboard/profil">Profil</a></li>
                         <li><a class="dropdown-item text-danger" href="/logout">Keluar</a></li>
                     </ul>
                 </li>

@@ -673,3 +673,157 @@ Route::post('/booking', function(Request $request) {
         return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
     }
 });
+
+// Edit Profil Sederhana
+Route::get('/profil', function(Request $request) {
+    $user = $request->session()->get('user');
+    if (!$user) return redirect('/login');
+    $isCustomer = ($user['role_user'] ?? null) === 'customer';
+    if ($isCustomer) {
+        $cust = \App\Models\TblCust::find($user['id_user']);
+        return view('profil', [
+            'isCustomer' => true,
+            'user' => $cust
+        ]);
+    } else {
+        $admin = \App\Models\TblUser::find($user['id_user']);
+        return view('profil', [
+            'isCustomer' => false,
+            'user' => $admin
+        ]);
+    }
+});
+
+Route::post('/profil', function(Request $request) {
+    $user = $request->session()->get('user');
+    if (!$user) return redirect('/login');
+    $isCustomer = ($user['role_user'] ?? null) === 'customer';
+    if ($isCustomer) {
+        $cust = \App\Models\TblCust::find($user['id_user']);
+        $validated = $request->validate([
+            'nama' => 'required',
+            'email' => 'nullable|email',
+            'no_hp' => 'required',
+            'pass' => 'nullable',
+        ]);
+        $cust->nama_cust = $validated['nama'];
+        $cust->email_cust = $validated['email'];
+        $cust->no_hp_cust = $validated['no_hp'];
+        if($validated['pass']) $cust->pass_cust = $validated['pass'];
+        $cust->updated_cust = now('Asia/Jakarta');
+        $cust->picu_cust = null;
+        try {
+            $cust->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $msg = 'Terjadi duplikat data.';
+            if(str_contains($e->getMessage(), 'no_hp_cust')) {
+                $msg = 'Nomor HP sudah terdaftar.';
+            } else if(str_contains($e->getMessage(), 'email_cust')) {
+                $msg = 'Email sudah terdaftar.';
+            }
+            return back()->with('swal', ['icon'=>'error','title'=>'Gagal update profil','text'=>$msg]);
+        }
+        // Update session jika nama/email/no_hp berubah
+        $request->session()->put('user.nama_user', $cust->nama_cust);
+        $request->session()->put('user.email_user', $cust->email_cust);
+        $request->session()->put('user.no_hp_user', $cust->no_hp_cust);
+        return back()->with('swal', ['icon'=>'success','title'=>'Profil berhasil diupdate']);
+    } else {
+        $admin = \App\Models\TblUser::find($user['id_user']);
+        $validated = $request->validate([
+            'nama' => 'required',
+            'email' => 'required|email',
+            'pass' => 'nullable',
+        ]);
+        $admin->nama_user = $validated['nama'];
+        $admin->email_user = $validated['email'];
+        if($validated['pass']) $admin->pass_user = $validated['pass'];
+        $admin->updated_user = now('Asia/Jakarta');
+        $admin->picu_user = $user['id_user'];
+        $admin->save();
+        // Update session jika nama/email berubah
+        $request->session()->put('user.nama_user', $admin->nama_user);
+        $request->session()->put('user.email_user', $admin->email_user);
+        return back()->with('swal', ['icon'=>'success','title'=>'Profil berhasil diupdate']);
+    }
+});
+
+// Dashboard versi profil
+Route::get('/dashboard/profil', function(Request $request) {
+    $user = $request->session()->get('user');
+    if (!$user) return redirect('/login');
+    $isCustomer = ($user['role_user'] ?? null) === 'customer';
+    if ($isCustomer) {
+        $cust = \App\Models\TblCust::find($user['id_user']);
+        return view('dashboard.profil', [
+            'user' => $cust
+        ]);
+    } else {
+        $admin = \App\Models\TblUser::find($user['id_user']);
+        return view('dashboard.profil', [
+            'user' => $admin
+        ]);
+    }
+});
+
+Route::post('/dashboard/profil', function(Request $request) {
+    $user = $request->session()->get('user');
+    if (!$user) return redirect('/login');
+    $isCustomer = ($user['role_user'] ?? null) === 'customer';
+    if ($isCustomer) {
+        $cust = \App\Models\TblCust::find($user['id_user']);
+        $validated = $request->validate([
+            'nama' => 'required',
+            'email' => 'nullable|email',
+            'no_hp' => 'required',
+            'pass' => 'nullable',
+        ]);
+        $cust->nama_cust = $validated['nama'];
+        $cust->email_cust = $validated['email'];
+        $cust->no_hp_cust = $validated['no_hp'];
+        if($validated['pass']) $cust->pass_cust = $validated['pass'];
+        $cust->updated_cust = now('Asia/Jakarta');
+        $cust->picu_cust = null;
+        try {
+            $cust->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $msg = 'Terjadi duplikat data.';
+            if(str_contains($e->getMessage(), 'no_hp_cust')) {
+                $msg = 'Nomor HP sudah terdaftar.';
+            } else if(str_contains($e->getMessage(), 'email_cust')) {
+                $msg = 'Email sudah terdaftar.';
+            }
+            return back()->with('swal', ['icon'=>'error','title'=>'Gagal update profil','text'=>$msg]);
+        }
+        // Update session jika nama/email/no_hp berubah
+        $request->session()->put('user.nama_user', $cust->nama_cust);
+        $request->session()->put('user.email_user', $cust->email_cust);
+        $request->session()->put('user.no_hp_user', $cust->no_hp_cust);
+        return back()->with('swal', ['icon'=>'success','title'=>'Profil berhasil diupdate']);
+    } else {
+        $admin = \App\Models\TblUser::find($user['id_user']);
+        $validated = $request->validate([
+            'nama' => 'required',
+            'email' => 'nullable|email',
+            'pass' => 'nullable',
+        ]);
+        $admin->nama_user = $validated['nama'];
+        $admin->email_user = $validated['email'];
+        if($validated['pass']) $admin->pass_user = $validated['pass'];
+        $admin->updated_user = now('Asia/Jakarta');
+        $admin->picu_user = $user['id_user'];
+        try {
+            $admin->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $msg = 'Terjadi duplikat data.';
+            if(str_contains($e->getMessage(), 'email_user')) {
+                $msg = 'Email sudah terdaftar.';
+            }
+            return back()->with('swal', ['icon'=>'error','title'=>'Gagal update profil','text'=>$msg]);
+        }
+        // Update session jika nama/email berubah
+        $request->session()->put('user.nama_user', $admin->nama_user);
+        $request->session()->put('user.email_user', $admin->email_user);
+        return back()->with('swal', ['icon'=>'success','title'=>'Profil berhasil diupdate']);
+    }
+});

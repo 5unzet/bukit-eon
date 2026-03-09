@@ -25,10 +25,10 @@
                                 @if($user && ($user['role_user'] ?? null) === 'customer')
                                     <li><a class="dropdown-item" href="/history">Riwayat Pesanan</a></li>
                                     <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/profil">Profil</a></li>
                                 @endif
-                            <li><a class="dropdown-item" href="/profil">Profil</a></li>
-                            <li><a class="dropdown-item" href="/password">Password</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <!--<li><a class="dropdown-item" href="/password">Password</a></li>
+                            <li><hr class="dropdown-divider"></li>-->
                             <li><a class="dropdown-item text-danger" href="/logout">Keluar</a></li>
                         </ul>
                     </li>
