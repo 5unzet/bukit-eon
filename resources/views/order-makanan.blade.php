@@ -206,15 +206,26 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('bayarTagihan').value = 'Rp ' + total.toLocaleString();
             document.getElementById('bayarNominal').value = '';
             document.getElementById('bayarKembalian').value = '';
+            const bayarNominal = document.getElementById('bayarNominal');
+            const bayarKembalian = document.getElementById('bayarKembalian');
+            // Update kembalian saat input berubah
+            bayarNominal.oninput = function() {
+                const bayar = parseInt(bayarNominal.value||'0');
+                if (isNaN(bayar) || bayar < total) {
+                    bayarKembalian.value = '';
+                } else {
+                    bayarKembalian.value = 'Rp ' + (bayar-total).toLocaleString();
+                }
+            };
             const form = document.getElementById('formBayar');
             form.onsubmit = function(e) {
                 e.preventDefault();
-                const bayar = parseInt(document.getElementById('bayarNominal').value||'0');
+                const bayar = parseInt(bayarNominal.value||'0');
                 if(bayar < total) {
                     Swal.fire('Gagal', 'Nominal bayar kurang dari tagihan!', 'error');
                     return;
                 }
-                document.getElementById('bayarKembalian').value = 'Rp ' + (bayar-total).toLocaleString();
+                bayarKembalian.value = 'Rp ' + (bayar-total).toLocaleString();
                 fetch("{{ route('dashboard.order-makanan.bayar') }}", {
                     method: 'POST',
                     headers: {

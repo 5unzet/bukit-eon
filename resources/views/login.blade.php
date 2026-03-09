@@ -6,11 +6,11 @@
         <div class="d-flex justify-content-center mb-3">
             <img src="/assets/logo.png" alt="Logo" class="rounded-circle" style="height: 64px; width: 64px; object-fit: contain;">
         </div>
-        <h1 class="h4 fw-bold mb-4 text-center">Login Management</h1>
+        <h1 class="h4 fw-bold mb-4 text-center">Masuk Pengguna</h1>
         <form method="POST" action="/login">
             @csrf
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label">Email/No. Handphone</label>
                 <input type="text" id="username" name="username" class="form-control" required>
             </div>
             <div class="mb-4">

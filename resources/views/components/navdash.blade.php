@@ -13,6 +13,15 @@
                     <a class="nav-link @if(Request::is('dashboard')) active bg-body-tertiary text-dark @endif" href="/dashboard">Dashboard</a>
                 </li>
                 <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle @if(Request::is('dashboard/book*')) active bg-body-tertiary text-dark @endif" href="#" id="orderDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Book
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                        <li><a class="dropdown-item" href="/dashboard/book/newTiket">Order Tiket Baru</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/book/newMakanan">Order Makanan Baru</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle @if(Request::is('dashboard/tiket*') || Request::is('dashboard/order-makanan*')) active bg-body-tertiary text-dark @endif" href="#" id="orderDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Order
                     </a>

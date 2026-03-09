@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="/">Beranda</a></li>
-                <li class="nav-item"><a class="nav-link" href="/booking">Booking</a></li>
+                <li class="nav-item"><a class="nav-link" href="/booking">Pesan Makanan</a></li>
                 <li class="nav-item"><a class="nav-link" href="/ticketing">Ticketing</a></li>
                 @php
                     $user = session('user');
@@ -18,8 +18,14 @@
                             {{ $user['nama_user'] ?? 'User' }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/dashboard">Dashboard Internal</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            @if(($user['role_user'] ?? null) !== 'customer')
+                                <li><a class="dropdown-item" href="/dashboard">Dashboard Internal</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            @endif
+                                @if($user && ($user['role_user'] ?? null) === 'customer')
+                                    <li><a class="dropdown-item" href="/history">Riwayat Pesanan</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                @endif
                             <li><a class="dropdown-item" href="/profil">Profil</a></li>
                             <li><a class="dropdown-item" href="/password">Password</a></li>
                             <li><hr class="dropdown-divider"></li>
