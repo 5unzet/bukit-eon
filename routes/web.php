@@ -150,6 +150,61 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/register', function (Request $request) {
+    if ($request->session()->get('is_logged_in')) {
+        return redirect('/booking');
+    }
+    return view('register');
+})->name('register');
+
+Route::post('/register', function (Request $request) {
+    if ($request->session()->get('is_logged_in')) {
+        return redirect('/booking');
+    }
+
+    $validated = $request->validate([
+        'nama' => 'required|string|max:255',
+        'no_hp' => 'required|string|max:20|unique:tbl_cust,no_hp_cust',
+        'email' => 'nullable|email|max:255|unique:tbl_cust,email_cust',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
+
+    try {
+        $cust = new TblCust();
+        $cust->nama_cust = $validated['nama'];
+        $cust->no_hp_cust = $validated['no_hp'];
+        $cust->email_cust = $validated['email'] ?? null;
+        $cust->pass_cust = $validated['password'];
+        $cust->status_cust = 'VALID';
+        $cust->created_cust = now('Asia/Jakarta');
+        $cust->save();
+
+        $request->session()->put('is_logged_in', true);
+        $request->session()->put('user', [
+            'id_user' => $cust->id_cust,
+            'nama_user' => $cust->nama_cust,
+            'email_user' => $cust->email_cust,
+            'no_hp_user' => $cust->no_hp_cust,
+            'role_user' => 'customer',
+            'status_user' => $cust->status_cust,
+            'created_user' => $cust->created_cust,
+        ]);
+
+        return redirect('/booking')->with('swal', [
+            'icon' => 'success',
+            'title' => 'Registrasi Berhasil',
+            'text' => 'Selamat datang, ' . $cust->nama_cust . '!',
+        ]);
+
+    } catch (\Exception $e) {
+        return back()->withInput()->with('swal', [
+            'icon' => 'error',
+            'title' => 'Registrasi Gagal',
+            'text' => 'Terjadi kesalahan saat mendaftar: ' . $e->getMessage(),
+        ]);
+    }
+})->name('register.store');
+
 Route::get('/login', function () {
     return view('login');
 })->name('login');
