@@ -13,7 +13,7 @@
                 <li class="nav-item"><a class="nav-link" href="/booking">Pesan Makanan</a></li>
                 <li class="nav-item"><a class="nav-link" href="/ticketing">Ticketing</a></li>
                 @php
-                    $user = session('user');
+                    $user = session('is_logged_in') ? session('user') : null;
                 @endphp
                 @if($user)
                     <li class="nav-item dropdown">

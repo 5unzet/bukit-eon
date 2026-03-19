@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="d-flex flex-column min-vh-100 bg-light justify-content-center align-items-center">
+    <div class="w-100" style="max-width: 400px;">
+        <a href="{{ url('/') }}" class="btn btn-outline-primary mb-3">
+            &larr; Kembali ke Beranda
+        </a>
+    </div>
     <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
         <div class="d-flex justify-content-center mb-3">
             <img src="/assets/logo.png" alt="Logo" class="rounded-circle" style="height: 64px; width: 64px; object-fit: contain;">

@@ -36,6 +36,9 @@
                 <li class="nav-item">
                     <a class="nav-link @if(Request::is('dashboard/makanan')) active bg-body-tertiary text-dark @endif" href="/dashboard/makanan">Makanan</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link @if(Request::is('dashboard/informasi-wisata')) active bg-body-tertiary text-dark @endif" href="/dashboard/informasi-wisata">Informasi Wisata</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle @if(Request::is('dashboard/laporan*')) active bg-body-tertiary text-dark @endif" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Laporan

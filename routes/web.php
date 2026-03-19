@@ -9,6 +9,7 @@ use App\Models\Iw;
 use App\Models\TblUser;
 use App\Models\Makan;
 use App\Models\TblTiket;
+use App\Models\LaporanWisata;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderMakananController;
 Route::get('/dashboard/book/newTiket', function(Request $request) {
@@ -205,7 +206,10 @@ Route::post('/register', function (Request $request) {
     }
 })->name('register.store');
 
-Route::get('/login', function () {
+Route::get('/login', function (Request $request) {
+    if ($request->session()->get('is_logged_in')) {
+        return redirect('/booking');
+    }
     return view('login');
 })->name('login');
 
@@ -278,7 +282,8 @@ Route::post('/login', function (Request $request) {
 });
 
 Route::get('/logout', function (Request $request) {
-    $request->session()->forget('is_logged_in');
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
     return redirect('/login');
 })->name('logout');
 
@@ -326,11 +331,157 @@ Route::get('/dashboard/wisata', function (Request $request) {
     return view('wisata', compact('wisatas'));
 });
 
+// Informasi Wisata (tampilan publik/dashboard)
+Route::get('/dashboard/informasi-wisata', function (Request $request) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+
+    $laporans = LaporanWisata::where('status_laporan', '<>', 'VOID')
+        ->with('user')
+        ->orderByDesc('updated_at_laporan')
+        ->get();
+
+    return view('informasi-wisata', compact('laporans'));
+})->name('informasi-wisata');
+
+// Form Tambah Wisata Baru
+Route::get('/dashboard/wisata/form', function (Request $request) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+    return view('form-wisata');
+})->name('wisata.form');
+
+// Form Edit Wisata
+Route::get('/dashboard/wisata/form/{id}', function (Request $request, $id) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+    $wisata = Iw::findOrFail($id);
+    return view('form-wisata', compact('wisata'));
+})->name('wisata.form.edit');
+
 Route::get('/dashboard/laporan/wisata', function (Request $request) {
     if (!$request->session()->get('is_logged_in')) {
         return redirect('/login');
     }
-    return view('laporan-wisata');
+    $laporans = LaporanWisata::where('status_laporan', '<>', 'VOID')
+        ->with('user')
+        ->orderByDesc('updated_at_laporan')
+        ->get();
+    return view('laporan-wisata', compact('laporans'));
+});
+
+// Form Tambah Laporan Wisata
+Route::get('/dashboard/laporan/wisata/form', function (Request $request) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+    return view('form-laporan-wisata');
+})->name('laporan-wisata.form');
+
+// Form Edit Laporan Wisata
+Route::get('/dashboard/laporan/wisata/form/{id}', function (Request $request, $id) {
+    if (!$request->session()->get('is_logged_in')) {
+        return redirect('/login');
+    }
+    $laporan = LaporanWisata::findOrFail($id);
+    return view('form-laporan-wisata', compact('laporan'));
+})->name('laporan-wisata.form.edit');
+
+// Tambah Laporan Wisata
+Route::post('/dashboard/laporan/wisata/tambah', function (Request $request) {
+    try {
+        $data = $request->validate([
+            'judul_laporan' => 'required|string|max:200',
+            'keterangan_laporan' => 'required|string|min:20',
+            'foto_laporan' => 'nullable|file|image|max:5120',
+        ]);
+        $data['status_laporan'] = 'VALID';
+        $data['picu_laporan'] = session('user.id_user') ?? 1;
+        $data['created_at_laporan'] = now('Asia/Jakarta');
+        $data['updated_at_laporan'] = now('Asia/Jakarta');
+        if ($request->hasFile('foto_laporan')) {
+            $dir = public_path('assets/laporan_wisata');
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+                    throw new \Exception('Gagal membuat folder assets/laporan_wisata');
+                }
+            }
+            $file = $request->file('foto_laporan');
+            $filename = uniqid('laporan_') . '.' . $file->getClientOriginalExtension();
+            $file->move($dir, $filename);
+            $data['foto_laporan'] = 'assets/laporan_wisata/' . $filename;
+        } else {
+            $data['foto_laporan'] = null;
+        }
+        LaporanWisata::create($data);
+        return response()->json(['success' => true]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
+});
+
+// Edit Laporan Wisata
+Route::post('/dashboard/laporan/wisata/edit/{id}', function (Request $request, $id) {
+    $laporan = LaporanWisata::findOrFail($id);
+    try {
+        $data = $request->validate([
+            'judul_laporan' => 'required|string|max:200',
+            'keterangan_laporan' => 'required|string|min:20',
+            'foto_laporan' => 'nullable|file|image|max:5120',
+        ]);
+        $data['picu_laporan'] = session('user.id_user') ?? 1;
+        $data['updated_at_laporan'] = now('Asia/Jakarta');
+        if ($request->hasFile('foto_laporan')) {
+            $dir = public_path('assets/laporan_wisata');
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+                    throw new \Exception('Gagal membuat folder assets/laporan_wisata');
+                }
+            }
+            // Hapus file lama jika ada
+            if ($laporan->foto_laporan && !Str::startsWith($laporan->foto_laporan, ['http://', 'https://'])) {
+                $oldPath = public_path($laporan->foto_laporan);
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+            $file = $request->file('foto_laporan');
+            $filename = uniqid('laporan_') . '.' . $file->getClientOriginalExtension();
+            $file->move($dir, $filename);
+            $data['foto_laporan'] = 'assets/laporan_wisata/' . $filename;
+        } else {
+            unset($data['foto_laporan']);
+        }
+        $laporan->update($data);
+        return response()->json(['success' => true]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage(), 'errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
+});
+
+// Hapus Laporan Wisata
+Route::post('/dashboard/laporan/wisata/hapus/{id}', function ($id) {
+    try {
+        $laporan = LaporanWisata::findOrFail($id);
+        // Hapus file gambar jika ada
+        if ($laporan->foto_laporan && !Str::startsWith($laporan->foto_laporan, ['http://', 'https://'])) {
+            $imagePath = public_path($laporan->foto_laporan);
+            if (file_exists($imagePath)) {
+                @unlink($imagePath);
+            }
+        }
+        $laporan->update(['status_laporan' => 'VOID', 'updated_at_laporan' => now('Asia/Jakarta')]);
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
 });
 
 Route::get('/dashboard/laporan/makanan', function (Request $request) {
